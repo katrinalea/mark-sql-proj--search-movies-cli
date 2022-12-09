@@ -5,17 +5,22 @@ async function doDemo() {
   const client = new Client({ database: 'omdb' });
   await client.connect();
 
-  while (readlineSync !== 'q'){
-    var inputQuestion = readlineSync.question('Search for what movie? (or q to quit):');
-    console.log(inputQuestion)
-  
-  const searchTerm = readlineSync;
+
+  while (true){
+  let questionAnswer = readlineSync.question('Search for what movie? (or q to quit):');
+  const searchTerm = questionAnswer;
+
+  if (questionAnswer === 'q'){
+    await client.end();
+    break
+  }
+
   const text = "select * from movies where name like $1";
   const values = [`%${searchTerm}%`];
   
   const res = await client.query(text, values);
   console.log(res.rows);
-  await client.end();
+
 }
 }
 doDemo();
